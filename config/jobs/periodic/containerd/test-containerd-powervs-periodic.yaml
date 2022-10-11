@@ -1,5 +1,7 @@
 periodics:
   - name: periodic-containerd-runc-l1-test-powerVS
+    labels:
+       preset-containerd-powervs: "true"
     cluster: k8s-ppc64le-cluster
     decorate: true
     decoration_config:
@@ -13,17 +15,8 @@ periodics:
         operator: "Equal"
         value: runtimesTeam
         effect: "NoSchedule"
-      volumes:
-      - name: atos-ssh-volume
-        secret:
-          secretName: atos-powervs-ssh-key
-          defaultMode: 256
       containers:
         - image: quay.io/powercloud/all-in-one:0.5
-          volumeMounts:
-          - name: atos-ssh-volume
-            readOnly: true
-            mountPath: "/etc/ssh-volume"
           command:
             - /bin/bash
             - -c
@@ -51,12 +44,6 @@ periodics:
                   exit 1
               fi
               echo "Done without failure"
-          env:
-            - name: IBMCLOUD_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: containerd-apikey
-                  key: apikey
   - name: periodic-containerd-runc-v1-test-powerVS
     cluster: k8s-ppc64le-cluster
     decorate: true
